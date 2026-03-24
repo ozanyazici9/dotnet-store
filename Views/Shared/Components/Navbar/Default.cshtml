@@ -1,0 +1,44 @@
+@model List<Kategori>
+
+<nav class="navbar navbar-dark bg-primary navbar-expand-lg">
+        <div class="container">
+          <button
+            type="button"
+            class="navbar-toggler"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbar"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a href="#" class="nav-link ps-0 active">Anasayfa</a>
+              </li>
+
+              @foreach (var kategori in Model) {
+                <li class="nav-item">
+                    <a href="#" class="nav-link">@kategori.KategoriAdi</a>
+              </li>
+              }
+              
+              
+              <li class="nav-item dropdown">
+                <a
+                  href="#"
+                  class="nav-link dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  >Diğer Kategoriler</a
+                >
+                <ul class="dropdown-menu">
+                    @foreach (var kategori in Model) {
+                        <li>
+                            <a href="#" class="dropdown-item">@kategori.KategoriAdi</a>
+                        </li>
+                    }
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
