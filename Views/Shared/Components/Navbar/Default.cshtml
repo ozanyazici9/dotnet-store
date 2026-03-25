@@ -13,12 +13,15 @@
           <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a href="#" class="nav-link ps-0 active">Anasayfa</a>
+                <a asp-controller="Home" asp-action="Index" class="nav-link ps-0 active">Anasayfa</a>
               </li>
 
               @foreach (var kategori in Model) {
                 <li class="nav-item">
-                    <a href="#" class="nav-link">@kategori.KategoriAdi</a>
+                    <a 
+                    asp-controller="Urun"
+                    asp-action="List"
+                    asp-route-url="@kategori.Url" class="nav-link">@kategori.KategoriAdi</a>
               </li>
               }
               
@@ -33,7 +36,8 @@
                 <ul class="dropdown-menu">
                     @foreach (var kategori in Model) {
                         <li>
-                            <a href="#" class="dropdown-item">@kategori.KategoriAdi</a>
+                            <a 
+                            asp-controller="Urun" asp-action="List"  asp-route-url="@kategori.Url" class="dropdown-item">@kategori.KategoriAdi</a>
                         </li>
                     }
                 </ul>

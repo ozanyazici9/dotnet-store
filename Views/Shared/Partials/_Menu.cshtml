@@ -4,6 +4,9 @@
   >
     @foreach (var kategori in Model) {
 
-      <a href="#" class="nav-link">@kategori.KategoriAdi</a>
+      <a asp-controller="Urun"
+          asp-action="List"
+          asp-route-url="/urunler/@kategori.Url" class="nav-link">@kategori.KategoriAdi
+      </a>
     }
 </nav>

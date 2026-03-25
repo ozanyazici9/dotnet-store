@@ -212,3 +212,4 @@ C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\9oxuhyosiu-{0}-
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\nsgrm1w63y-{0}-5ipweew5fc-5ipweew5fc.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\5g3n9cax0i-{0}-lnupz8dyoz-lnupz8dyoz.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\w3sjv5b19z-{0}-jxl0o8kplo-jxl0o8kplo.gz
+C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\dotnet-store.sourcelink.json
