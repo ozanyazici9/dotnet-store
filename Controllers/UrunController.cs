@@ -17,18 +17,23 @@ public class UrunController : Controller
         return View();
     }
 
-    public ActionResult List(string url)
+    public ActionResult List(string url, string q)
     {
-        List<Urun> urunler = [];
+        var query = _context.Urunler.Where(urun => urun.Aktif); // Queryable
 
-        if (url == null)
+        if (!string.IsNullOrEmpty(url))
         {
-            urunler = _context.Urunler.Where(urun => urun.Aktif).ToList();
-        } else
-        {
-            urunler = _context.Urunler.Where(urun => urun.Aktif && urun.Kategori.Url == url).ToList();
+            query = query.Where(urun => urun.Kategori.Url == url);
         }
-        return View(urunler);
+
+        if (!string.IsNullOrEmpty(q))
+        {
+            query = query.Where(urun => urun.UrunAdi.ToLower().Contains(q.ToLower()));
+
+            ViewData["q"] = q;
+        }
+
+        return View(query.ToList());
     }
 
     public ActionResult Details(int id)
@@ -38,10 +43,11 @@ public class UrunController : Controller
         {
             return RedirectToAction("List");
         }
-        
-        ViewData["BenzerUrunler"] = _context.Urunler
-            .Where(b => b.KategoriId == urun.KategoriId && b.Id != urun.Id && b.Aktif)
-            .Take(4).ToList();
+
+        ViewData["BenzerUrunler"] = _context
+            .Urunler.Where(b => b.KategoriId == urun.KategoriId && b.Id != urun.Id && b.Aktif)
+            .Take(4)
+            .ToList();
 
         return View(urun);
     }

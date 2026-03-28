@@ -17,13 +17,13 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
     <title>E-Commerce</title>
   </head>
   <body class="bg-light">
 
     <header>
-        @await Html.PartialAsync(partialViewName: "Partials/_Topbar")
+        @await Html.PartialAsync(partialViewName: "Partials/Site/_Topbar")
         @await Component.InvokeAsync("Navbar")
     </header>
 
@@ -31,7 +31,7 @@
         @RenderBody()
     </main>
 
-    @await Html.PartialAsync(partialViewName: "Partials/_Footer")
+    @await Html.PartialAsync(partialViewName: "Partials/Site/_Footer")
 
     <script src="~/js/fslightbox.js"></script>
     <script

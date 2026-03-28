@@ -7,7 +7,7 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2">
             @foreach (var urun in Model) {
                 <div class="col">
-                    @await Html.PartialAsync(partialViewName: "Partials/_UrunCard", urun)
+                    @await Html.PartialAsync(partialViewName: "Partials/Site/_UrunCard", urun)
                 </div>
             }
         </div>

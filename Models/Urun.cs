@@ -11,5 +11,4 @@ public class Urun
     public bool Anasayfa { get; set; }
     public int KategoriId { get; set; }
     public Kategori Kategori { get; set; } = null!; // navigation property
-
 }
