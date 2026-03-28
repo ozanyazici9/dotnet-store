@@ -108,38 +108,3 @@
     display: inline-block;
     overflow: hidden;
 }
-
-/* admin panel */
-.gallery-wrap .thumbs-wrap img {
-    max-width: 100%;
-    height: 100%;
-    object-fit: cover;
-    cursor: zoom-in;
-}
-
-.checked {
-    color: orange;
-}
-
-.text-gray-300 {
-    color: #dddfeb !important;
-}
-
-.border-left-primary {
-    border-left: .25rem solid #4e73df !important;
-}
-
-.border-left-success {
-    border-left: .25rem solid #1cc88a !important;
-}
-
-.border-left-warning {
-    border-left: .25rem solid #f6c23e !important;
-}
-
-
-.border-left-info {
-    border-left: .25rem solid #36b9cc !important;
-}
-
-
