@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_store.ViewComponents;
 
-    public class Navbar : ViewComponent
+public class Navbar : ViewComponent
+{
+    private readonly DataContext _context;
+
+    public Navbar(DataContext context)
     {
-        private readonly DataContext _context;
-
-        public Navbar(DataContext context)
-        {
-            _context = context;
-        }
-
-        public IViewComponentResult Invoke()
-        {
-            var kategoriler = _context.Kategoriler.ToList();
-            return View(kategoriler);
-        }
+        _context = context;
     }
+
+    public IViewComponentResult Invoke()
+    {
+        var kategoriler = _context.Kategoriler.ToList();
+        return View(kategoriler);
+    }
+}

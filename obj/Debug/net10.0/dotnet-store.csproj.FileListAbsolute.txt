@@ -224,7 +224,6 @@ C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\yd3xsz5f4z-{0}-
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\pksz6j64zb-{0}-9jrwng7t3d-9jrwng7t3d.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\5dmt2uctie-{0}-ofafyr9l2p-ofafyr9l2p.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\6mtz6wqhoe-{0}-a95g5shwyb-a95g5shwyb.gz
-C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\na499i51te-{0}-qycmi26g11-qycmi26g11.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\pdirh6tf2w-{0}-c6iyugt5em-c6iyugt5em.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\txwdarp320-{0}-fdypuad0ki-fdypuad0ki.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\hl1wys4hsl-{0}-l79u8qdsdx-l79u8qdsdx.gz
@@ -232,3 +231,4 @@ C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\tklycihhk4-{0}-
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\gxs7qbtqa3-{0}-1ax90qc6nj-1ax90qc6nj.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\49kswhn6un-{0}-sknwebeh6l-sknwebeh6l.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\lc716ummtx-{0}-qg6iiyp6rc-qg6iiyp6rc.gz
+C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\na499i51te-{0}-jtyvnkcgln-jtyvnkcgln.gz

@@ -1,6 +1,5 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using dotnet_store.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_store.Controllers;
 
