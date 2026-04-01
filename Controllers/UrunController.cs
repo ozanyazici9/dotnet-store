@@ -1,5 +1,6 @@
 using dotnet_store.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_store.Controllers;
 
@@ -14,7 +15,21 @@ public class UrunController : Controller
 
     public ActionResult Index()
     {
-        return View();
+        // Include olmadan da çalışır
+        var urunler = _context
+            .Urunler.Select(u => new UrunGetModel
+            {
+                Id = u.Id,
+                Resim = u.Resim,
+                Fiyat = u.Fiyat,
+                UrunAdi = u.UrunAdi,
+                Aktif = u.Aktif,
+                Anasayfa = u.Anasayfa,
+                KategoriAdi = u.Kategori.KategoriAdi, // EF bunu görünce otomatik join atar
+            })
+            .ToList();
+
+        return View(urunler);
     }
 
     public ActionResult List(string url, string q)
