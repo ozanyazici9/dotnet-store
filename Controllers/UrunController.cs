@@ -1,5 +1,6 @@
 using dotnet_store.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_store.Controllers;
@@ -65,5 +66,106 @@ public class UrunController : Controller
             .ToList();
 
         return View(urun);
+    }
+
+    public ActionResult Create()
+    {
+        // ViewBag.Kategoriler = _context.Kategoriler.ToList();
+        ViewBag.Kategoriler = new SelectList(_context.Kategoriler.ToList(), "Id", "KategoriAdi");
+        // Buradaki selectlist sayesinde urun create sayfasında dropdown olacak  asp-items ile döngü yazmaya gerek yok.
+
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> Create(UrunCreateModel model)
+    {
+        // upload edilen dosyanın ismi projenin içindeki bir dosya ile aynı olup onu ezmesin diye random bir dosya ismi olusturduk eğer istersek yüklenen dosyanın uzantısını da string metodlar ile alabiliriz.
+        var fileName = Path.GetRandomFileName() + ".jpg";
+        // upload edilen dosyanın fiziksel olarak hangi dizinde tutulacağını belirliyoruz
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", fileName);
+
+        using (var stream = new FileStream(path, FileMode.Create))
+        {
+            await model.Resim!.CopyToAsync(stream);
+        }
+
+        var entity = new Urun()
+        {
+            UrunAdi = model.UrunAdi,
+            Aciklama = model.Aciklama,
+            Fiyat = model.Fiyat,
+            Aktif = model.Aktif,
+            Anasayfa = model.Anasayfa,
+            KategoriId = model.KategoriId,
+            Resim = fileName, // upload
+        };
+
+        _context.Urunler.Add(entity);
+        _context.SaveChanges();
+        return RedirectToAction("Index");
+    }
+
+    public ActionResult Edit(int id)
+    {
+        var entity = _context
+            .Urunler.Select(u => new UrunEditModel
+            {
+                Id = u.Id,
+                UrunAdi = u.UrunAdi,
+                Aciklama = u.Aciklama,
+                Fiyat = u.Fiyat,
+                Aktif = u.Aktif,
+                Anasayfa = u.Anasayfa,
+                KategoriId = u.KategoriId,
+                ResimAdi = u.Resim, // upload
+            })
+            .FirstOrDefault(u => u.Id == id);
+
+        ViewBag.Kategoriler = new SelectList(_context.Kategoriler.ToList(), "Id", "KategoriAdi");
+
+        return View(entity);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> Edit(int id, UrunEditModel model)
+    {
+        if (id != model.Id)
+        {
+            return RedirectToAction("Index");
+        }
+
+        var entity = _context.Urunler.Find(model.Id);
+
+        if (entity != null)
+        {
+            if (model.ResimDosyasi != null)
+            {
+                var fileName = Path.GetRandomFileName() + ".jpg";
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await model.ResimDosyasi!.CopyToAsync(stream);
+                }
+
+                entity.Resim = fileName;
+            }
+
+            entity.UrunAdi = model.UrunAdi;
+            entity.Aciklama = model.Aciklama;
+            entity.Fiyat = model.Fiyat;
+            entity.Aktif = model.Aktif;
+            entity.Anasayfa = model.Anasayfa;
+            entity.KategoriId = model.KategoriId;
+
+            _context.SaveChanges();
+
+            TempData["Mesaj"] = $"{entity.UrunAdi} urunu güncellendi";
+
+            return RedirectToAction("Index");
+        }
+
+        return View(model);
     }
 }

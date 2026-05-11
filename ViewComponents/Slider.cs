@@ -1,7 +1,5 @@
 using dotnet_store.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 namespace dotnet_store.ViewComponents;
 

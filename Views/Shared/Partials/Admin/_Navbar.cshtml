@@ -1,6 +1,6 @@
 <nav class="navbar bg-dark border-bottom border-body navbar-expand-lg" data-bs-theme="dark">
     <div class="container">
-        <a href="index.html" class="navbar-brand">Admin</a>
+        <a asp-controller="Admin" asp-action="Index" class="navbar-brand">Admin</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>
@@ -14,7 +14,7 @@
                     <a asp-controller="Urun" asp-action="Index" class="nav-link">Ürün</a>
                 </li>
                 <li class="nav-item">
-                    <a href="slider.html" class="nav-link">Slider</a>
+                    <a asp-controller="Slider" asp-action="Index" class="nav-link">Slider</a>
                 </li>
                 <li class="nav-item">
                     <a href="role.html" class="nav-link">Role</a>

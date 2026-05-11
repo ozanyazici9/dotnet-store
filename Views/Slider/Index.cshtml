@@ -1,16 +1,15 @@
+@model List<SliderGetModel>
+
 @{
     Layout = "_AdminLayout";
 }
-
-@model List<UrunGetModel>
-
 
 <div class="row">
     <div class="col">
         <div class="card shadow">
             <div class="card-header py-1 d-flex justify-content-between align-items-center">
-                <h5 class="card-title">Ürünler</h5>
-                <a asp-controller="Urun" asp-action="Create" class="btn btn-sm btn-primary">
+                <h5 class="card-title">Slider Resimleri</h5>
+                <a asp-controller="Slider" asp-action="Create" class="btn btn-sm btn-primary">
                     <i class="fa-solid fa-plus"></i>
                 </a>
             </div>
@@ -20,36 +19,33 @@
                         <thead class="table-secondary">
                             <tr>
                                 <th style="width: 20px;">Id</th>
+                                <th>Başlık</th>
                                 <th style="width: 80px;">Resim</th>
-                                <th>Ürün Adı</th>
-                                <th>Fiyat</th>
+                                
+                                <th>Açıklama</th>
+                                <th>Index</th>
                                 <th>Aktif</th>
-                                <th>Anasayfa</th>
-                                <th>Kategori</th>
                                 <th style="width: 50px;"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var urun in Model)
+                            @foreach (var slider in Model)
                             {
                                 <tr>
-                                    <td>@urun.Id</td>
+                                    <td>@slider.Id</td>
+                                    <td>@slider.Baslik</td>
                                     <td>
-                                        <img src="img/@urun.Resim" class="img-fluid" alt="">
+                                        <img src="img/@slider.ImageUrl" class="img-fluid" alt="">
                                     </td>
-                                    <td>@urun.UrunAdi</td>
-                                    <td>@urun.Fiyat ₺</td>
+                                    
+                                    <td>@slider.Aciklama</td>
+                                    <td>@slider.Index</td>
                                     <td>
                                         <i
-                                        class="fa-solid @(urun.Aktif ? "fa-circle-check text-success" : "fa-circle-xmark text-danger")"></i>
+                                        class="fa-solid @(slider.Aktif ? "fa-circle-check text-success" : "fa-circle-xmark text-danger")"></i>
                                     </td>
                                     <td>
-                                        <i
-                                        class="fa-solid @(urun.Anasayfa ? "fa-circle-check text-success" : "fa-circle-xmark text-danger")"></i>
-                                    </td>
-                                    <td>@urun.KategoriAdi</td>
-                                    <td>
-                                        <a asp-controller="Urun" asp-action="Edit" asp-route-id="@urun.Id" class="btn btn-primary btn-sm">
+                                        <a asp-controller="Slider" asp-action="Edit" asp-route-id="@slider.Id" class="btn btn-primary btn-sm">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                     </td>

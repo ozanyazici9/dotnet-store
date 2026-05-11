@@ -25,7 +25,11 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
 
-app.MapStaticAssets();
+// runtime da upload edilen statik dosyaları serve etmez. Çünkü compile time da mevcut olan statik dosyaları sıkıştırır ve performas sağlayarak daha hızlı serve edebilir. Runtime da gelen dosya compile time da bulunmadığı için onu serve edemez.
+//app.MapStaticAssets();
+
+// runtime da upload edilen statik dosyaları serve edebilir yani bir url ile ulaşmanı sağlar.
+app.UseStaticFiles();
 
 // urunler/telefon
 
