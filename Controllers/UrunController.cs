@@ -80,11 +80,27 @@ public class UrunController : Controller
     [HttpPost]
     public async Task<ActionResult> Create(UrunCreateModel model)
     {
+        // Model de yapamadık. Çünkü bir resim dosyası yüklenebilir ama bu dosyanın boyutu 0 olabilir. Bu durumuda kontrol etmek için if blogu yazdık.
+        if (model.Resim == null || model.Resim.Length == 0)
+        {
+            ModelState.AddModelError("Resim", "Resim zorunludur.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Kategoriler = new SelectList(
+                _context.Kategoriler.ToList(),
+                "Id",
+                "KategoriAdi"
+            );
+            return View(model);
+        }
+
         // upload edilen dosyanın ismi projenin içindeki bir dosya ile aynı olup onu ezmesin diye random bir dosya ismi olusturduk eğer istersek yüklenen dosyanın uzantısını da string metodlar ile alabiliriz.
         var fileName = Path.GetRandomFileName() + ".jpg";
         // upload edilen dosyanın fiziksel olarak hangi dizinde tutulacağını belirliyoruz
         var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", fileName);
-
+        // using içerisinde oluşturduğumuz FileStream nesnesi FileMode.create ile belirlediğimiz dizinde oluşturulacak olan dosyayı işaret eder. Bu nesne işlemden sonra kullanılmayacağı için işlem bittikten sonra otomatik dispose edilsin diye using blogu kullanılır. blogun içindeki kod ise gelen veriyi dosyaya kopyalar.
         using (var stream = new FileStream(path, FileMode.Create))
         {
             await model.Resim!.CopyToAsync(stream);
@@ -94,10 +110,10 @@ public class UrunController : Controller
         {
             UrunAdi = model.UrunAdi,
             Aciklama = model.Aciklama,
-            Fiyat = model.Fiyat,
+            Fiyat = model.Fiyat ?? 0, // model de fiyat null olabilir diye ?? kullandık boş bir değer geldiğinde null geliyordu ?? yaparak eğer null gelirse 0 degerini ver dedik. Bu yüzden model de fiyat nullable int olarak tanımlanmıştır
             Aktif = model.Aktif,
             Anasayfa = model.Anasayfa,
-            KategoriId = model.KategoriId,
+            KategoriId = (int)model.KategoriId!,
             Resim = fileName, // upload
         };
 
@@ -130,6 +146,18 @@ public class UrunController : Controller
     [HttpPost]
     public async Task<ActionResult> Edit(int id, UrunEditModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            
+
+            ViewBag.Kategoriler = new SelectList(
+                _context.Kategoriler.ToList(),
+                "Id",
+                "KategoriAdi"
+            );
+            return View(model);
+        }
+
         if (id != model.Id)
         {
             return RedirectToAction("Index");
@@ -139,14 +167,14 @@ public class UrunController : Controller
 
         if (entity != null)
         {
-            if (model.ResimDosyasi != null)
+            if (model.Resim != null)
             {
                 var fileName = Path.GetRandomFileName() + ".jpg";
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", fileName);
 
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    await model.ResimDosyasi!.CopyToAsync(stream);
+                    await model.Resim!.CopyToAsync(stream);
                 }
 
                 entity.Resim = fileName;
@@ -154,10 +182,10 @@ public class UrunController : Controller
 
             entity.UrunAdi = model.UrunAdi;
             entity.Aciklama = model.Aciklama;
-            entity.Fiyat = model.Fiyat;
+            entity.Fiyat = model.Fiyat ?? 0;
             entity.Aktif = model.Aktif;
             entity.Anasayfa = model.Anasayfa;
-            entity.KategoriId = model.KategoriId;
+            entity.KategoriId = (int)model.KategoriId!;
 
             _context.SaveChanges();
 

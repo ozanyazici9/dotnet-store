@@ -50,6 +50,7 @@ public class SliderController : Controller
         // upload edilen dosyanın fiziksel olarak hangi dizinde tutulacağını belirliyoruz
         var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", fileName);
 
+        //using içerisinde oluşturduğumuz FileStream nesnesi FileMode.create ile belirlediğimiz dizinde oluşturulacak olan dosyayı işaret eder. Bu nesne işlemden sonra kullanılmayacağı için işlem bittikten sonra otomatik dispose edilsin diye using blogu kullanılır. blogun içindeki kod ise gelen veriyi dosyaya kopyalar.
         using (var stream = new FileStream(path, FileMode.Create))
         {
             await model.Resim.CopyToAsync(stream);

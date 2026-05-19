@@ -19,18 +19,21 @@
                         <label asp-for="UrunAdi" class="col-sm-2 col-form-label"></label>
                         <div class="col-sm-10">
                             <input asp-for="UrunAdi" class="form-control">
+                            <span asp-validation-for="UrunAdi" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label asp-for="Aciklama" class="col-sm-2 col-form-label"></label>
                         <div class="col-sm-10">
                             <textarea asp-for="Aciklama" class="form-control"></textarea>
+                            <span asp-validation-for="Aciklama" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label asp-for="Fiyat" class="col-sm-2 col-form-label"></label>
                         <div class="col-sm-10">
                             <input asp-for="Fiyat" class="form-control">
+                            <span asp-validation-for="Fiyat" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -49,6 +52,7 @@
                         <label asp-for="Resim" class="col-sm-2 col-form-label"></label>
                         <div class="col-sm-10">
                             <input asp-for="Resim" class="form-control">
+                            <span asp-validation-for="Resim" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -57,6 +61,7 @@
                             <select asp-for="KategoriId" class="form-select" asp-items="ViewBag.Kategoriler">
                                 <option value="" selected>Seçiniz</option>
                             </select>
+                            <span asp-validation-for="KategoriId" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -67,6 +72,10 @@
                 </form>
             </div>
         </div>
-    </div>
-    
-    </div>
+    </div>    
+</div>
+
+ @*Client side validation için gerekli scriptler. Admin layout'unda @RenderSection("Scripts") eklediğimiz için burada tanımlayabiliriz. Sadece validation gerekli olduğu sayfalarda tanımlamak daha performanslı olacaktır. RenderSection ile tanımladığımız alanlar sadece o sayfaya özgü scriptler için kullanılır. Admin layout'unda genel olarak kullanılan scriptler zaten tanımlanmıştır. Bu şekilde sadece gerekli sayfalarda ekstra scriptler ekleyebiliriz. *@
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

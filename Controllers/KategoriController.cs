@@ -34,12 +34,17 @@ public class KategoriController : Controller
     [HttpPost]
     public ActionResult Create(KategoriCreateModel model)
     {
-        var entity = new Kategori() { KategoriAdi = model.KategoriAdi, Url = model.Url };
+        if (ModelState.IsValid)
+        {
+            var entity = new Kategori() { KategoriAdi = model.KategoriAdi, Url = model.Url };
 
-        _context.Kategoriler.Add(entity);
-        _context.SaveChanges();
+            _context.Kategoriler.Add(entity);
+            _context.SaveChanges();
 
-        return RedirectToAction("Index");
+            return RedirectToAction("Index");
+        }
+
+        return View(model);
     }
 
     public ActionResult Edit(int id)
@@ -63,18 +68,21 @@ public class KategoriController : Controller
             return RedirectToAction("Index");
         }
 
-        var entity = _context.Kategoriler.FirstOrDefault(i => i.Id == model.Id);
-
-        if (entity != null)
+        if (ModelState.IsValid)
         {
-            entity.KategoriAdi = model.KategoriAdi;
-            entity.Url = model.Url;
+            var entity = _context.Kategoriler.FirstOrDefault(i => i.Id == model.Id);
 
-            _context.SaveChanges();
+            if (entity != null)
+            {
+                entity.KategoriAdi = model.KategoriAdi;
+                entity.Url = model.Url;
 
-            TempData["Mesaj"] = $"{entity.KategoriAdi} kategorisi güncellendi";
+                _context.SaveChanges();
 
-            return RedirectToAction("Index");
+                TempData["Mesaj"] = $"{entity.KategoriAdi} kategorisi güncellendi";
+
+                return RedirectToAction("Index");
+            }
         }
 
         return View(model);
