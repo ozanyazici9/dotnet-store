@@ -21,11 +21,11 @@
                                 <th style="width: 20px;">Id</th>
                                 <th>Başlık</th>
                                 <th style="width: 80px;">Resim</th>
-                                
+
                                 <th>Açıklama</th>
                                 <th>Index</th>
                                 <th>Aktif</th>
-                                <th style="width: 50px;"></th>
+                                <th style="width: 84px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -37,7 +37,7 @@
                                     <td>
                                         <img src="img/@slider.ImageUrl" class="img-fluid" alt="">
                                     </td>
-                                    
+
                                     <td>@slider.Aciklama</td>
                                     <td>@slider.Index</td>
                                     <td>
@@ -45,8 +45,13 @@
                                         class="fa-solid @(slider.Aktif ? "fa-circle-check text-success" : "fa-circle-xmark text-danger")"></i>
                                     </td>
                                     <td>
-                                        <a asp-controller="Slider" asp-action="Edit" asp-route-id="@slider.Id" class="btn btn-primary btn-sm">
+                                        <a asp-controller="Slider" asp-action="Edit" asp-route-id="@slider.Id"
+                                           class="btn btn-primary btn-sm">
                                             <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a asp-controller="Slider" asp-action="Delete" asp-route-id="@slider.Id"
+                                           class="btn btn-danger btn-sm">
+                                            <i class="fa-solid fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>

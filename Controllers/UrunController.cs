@@ -1,7 +1,6 @@
 using dotnet_store.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_store.Controllers;
 
@@ -14,11 +13,18 @@ public class UrunController : Controller
         _context = context;
     }
 
-    public ActionResult Index()
+    public ActionResult Index(int? kategori)
     {
+        var query = _context.Urunler.AsQueryable();
+
+        if (kategori != null)
+        {
+            query = query.Where(i => i.KategoriId == kategori);
+        }
+
         // Include olmadan da çalışır
-        var urunler = _context
-            .Urunler.Select(u => new UrunGetModel
+        var urunler = query
+            .Select(u => new UrunGetModel
             {
                 Id = u.Id,
                 Resim = u.Resim,
@@ -29,6 +35,8 @@ public class UrunController : Controller
                 KategoriAdi = u.Kategori.KategoriAdi, // EF bunu görünce otomatik join atar
             })
             .ToList();
+
+        ViewBag.Kategoriler = new SelectList(_context.Kategoriler.ToList(), "Id", "KategoriAdi", kategori);
 
         return View(urunler);
     }
@@ -148,8 +156,6 @@ public class UrunController : Controller
     {
         if (!ModelState.IsValid)
         {
-            
-
             ViewBag.Kategoriler = new SelectList(
                 _context.Kategoriler.ToList(),
                 "Id",
@@ -195,5 +201,43 @@ public class UrunController : Controller
         }
 
         return View(model);
+    }
+
+    public ActionResult Delete(int? id)
+    {
+        if (id == null)
+        {
+            return RedirectToAction("Index");
+        }
+
+        var entity = _context.Urunler.FirstOrDefault(u => u.Id == id);
+
+        if (entity != null)
+        {
+            return View(entity);
+        }
+
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult DeleteConfirm(int? id)
+    {
+        if (id == null)
+        {
+            return RedirectToAction("Index");
+        }
+
+        var entity = _context.Urunler.FirstOrDefault(u => u.Id == id);
+
+        if (entity != null)
+        {
+            _context.Remove(entity);
+            _context.SaveChanges();
+
+            TempData["Mesaj"] = $"{entity.UrunAdi} ürünü silindi";
+        }
+
+        return RedirectToAction("Index");
     }
 }

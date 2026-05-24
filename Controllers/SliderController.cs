@@ -1,16 +1,19 @@
 using dotnet_store.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_store.Controllers;
 
 public class SliderController : Controller
 {
     private readonly DataContext _context;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public SliderController(DataContext context)
+    public SliderController(DataContext context, IWebHostEnvironment webHostEnvironment)
     {
         _context = context;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     public ActionResult Index()
@@ -32,7 +35,9 @@ public class SliderController : Controller
 
     public ActionResult Create()
     {
-        int currentIndex = _context.SliderImages.Max(i => i.Index) + 1;
+        int currentIndex = _context.SliderImages.Any()
+            ? _context.SliderImages.Max(i => i.Index) + 1
+            : 1;
 
         var indexes = _context.SliderImages.Select(i => i.Index).ToList();
 
@@ -163,5 +168,50 @@ public class SliderController : Controller
         }
 
         return View(model);
+    }
+
+    public ActionResult Delete(int? id)
+    {
+        if (id != null)
+        {
+            var entity = _context.SliderImages.Find(id);
+
+            return View(entity);
+        }
+
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public ActionResult DeleteConfirm(int? id)
+    {
+        if (id != null)
+        {
+            var query = _context.SliderImages.AsQueryable();
+
+            var slider = query.FirstOrDefault(i => i.Id == id);
+
+            if (slider != null)
+            {
+                // IWebHostEnvironment ASP.NET Core'un sunduğu bir interface'tir. Web uygulamasının çalıştığı ortam hakkında bilgi verir. Ve WebRootPath otomatik olarak projenin wwwroot klasörünün tam yolunu verir, elle yazmana gerek yok.
+                var path = Path.Combine(_webHostEnvironment.WebRootPath, "img", slider.ImageUrl);
+
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                }
+
+                query
+                    .Where(i => i.Index > slider.Index)
+                    .ExecuteUpdate(s => s.SetProperty(s => s.Index, s => s.Index - 1));
+
+                _context.SliderImages.Remove(slider);
+                _context.SaveChanges();
+
+                TempData["Mesaj"] = $"{slider.Baslik} slider' ı silindi.";
+            }
+        }
+
+        return RedirectToAction("Index");
     }
 }

@@ -20,14 +20,14 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <title>E-Commerce</title>
   </head>
-  <body class="bg-light">
+  <body class="bg-light d-flex flex-column min-vh-100">
 
     <header>
         @await Html.PartialAsync(partialViewName: "Partials/Site/_Topbar")
         @await Component.InvokeAsync("Navbar")
     </header>
 
-    <main>
+    <main class="flex-grow-1">
         @RenderBody()
     </main>
 

@@ -22,7 +22,7 @@
                                 <th>Kategori Adı</th>
                                 <th>Url</th>
                                 <th>Ürün Sayısı</th>
-                                <th style="width: 90px;"></th>
+                                <th style="width: 130px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,9 +38,18 @@
                                                asp-route-id="@kategori.Id">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
-                                        <a class="btn btn-primary btn-sm">
+
+                                        <a asp-controller="Urun" asp-action="Index" asp-route-kategoriId="@kategori.Id" class="btn btn-primary btn-sm">
                                             <i class="fa-solid fa-right-long"></i>
                                         </a>
+
+                                        @if(kategori.UrunSayisi == 0)
+                                        {   
+                                        <a class="btn btn-danger btn-sm" asp-controller="Kategori" asp-action="Delete"
+                                               asp-route-id="@kategori.Id">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                        }
                                     </td>
                                 </tr>
                             }
