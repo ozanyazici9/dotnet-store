@@ -5,7 +5,6 @@ namespace dotnet_store.ViewComponents;
 
 public class Slider : ViewComponent
 {
-
     private readonly DataContext _context;
 
     public Slider(DataContext context)
@@ -15,7 +14,7 @@ public class Slider : ViewComponent
 
     public IViewComponentResult Invoke()
     {
-        var sliderImages = _context.SliderImages.ToList();
+        var sliderImages = _context.SliderImages.OrderBy(i => i.Index).ToList();
         return View(sliderImages);
     }
 }

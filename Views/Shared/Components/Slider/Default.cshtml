@@ -1,8 +1,7 @@
 @model List<Slider>
 
-<div id="slider" class="carousel slide" data-bs-ride="carousel">
+<div id="slider" class="carousel slide h-100" data-bs-ride="carousel">
    <div class="carousel-indicators">
-
         @{
             int x = 0;
             foreach (var slider in Model) {
@@ -16,8 +15,8 @@
             }
         }
    </div>
-   <div class="carousel-inner">
 
+   <div class="carousel-inner h-100">
     @{
         int y = 0;
         foreach (var slider in Model) {
@@ -26,12 +25,14 @@
                 <img
                     src="/img/@slider.ImageUrl"
                     alt="@slider.Baslik"
-                    class="d-block w-100"
+                    class="d-block w-100 h-100 object-fit-cover"
                 />
             </div>
             y++;
         }
      }
+     </div>
+     
      <button
        type="button"
        class="carousel-control-prev"
@@ -48,5 +49,5 @@
      >
        <span class="carousel-control-next-icon"></span>
      </button>
-   </div>
+   
 </div>

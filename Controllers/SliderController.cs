@@ -19,7 +19,8 @@ public class SliderController : Controller
     public ActionResult Index()
     {
         var sliderImages = _context
-            .SliderImages.Select(i => new SliderGetModel
+            .SliderImages.OrderBy(i => i.Index)
+            .Select(i => new SliderGetModel
             {
                 Id = i.Id,
                 ImageUrl = i.ImageUrl,
@@ -147,14 +148,49 @@ public class SliderController : Controller
 
             if (indexes.Contains(model.Index))
             {
-                var sliders = _context.SliderImages.Where(i => i.Index >= model.Index).ToList();
-
-                foreach (var slider in sliders)
+                // Index Küçültme
+                if (entity.Index > model.Index)
                 {
-                    slider.Index++;
+                    // -1 index
+                    if (entity.Index - model.Index == 1)
+                    {
+                        var tinySlider = _context
+                            .SliderImages.Where(i => i.Index == model.Index)
+                            .ExecuteUpdate(i => i.SetProperty(x => x.Index, x => x.Index + 1));
+                    }
+
+                    // index - > 1
+                    if (entity.Index - model.Index > 1)
+                    {
+                        var tinySliders = _context
+                            .SliderImages.Where(i =>
+                                i.Index >= model.Index && i.Index < entity.Index
+                            )
+                            .ExecuteUpdate(i => i.SetProperty(x => x.Index, x => x.Index + 1));
+                    }
                 }
 
-                _context.SaveChanges();
+                // Index Arttırma
+                if (entity.Index < model.Index)
+                {
+                    // +1 index
+                    if (model.Index - entity.Index == 1)
+                    {
+                        var bigSlider = _context
+                            .SliderImages.Where(i => i.Index == model.Index)
+                            .ExecuteUpdate(i => i.SetProperty(x => x.Index, x => x.Index - 1));
+                    }
+
+                    // index + > 1
+                    if (model.Index - entity.Index > 1)
+                    {
+                        var bigSliders = _context
+                            .SliderImages.Where(i =>
+                                i.Index > entity.Index && i.Index <= model.Index
+                            )
+                            .ExecuteUpdate(i => i.SetProperty(x => x.Index, x => x.Index - 1));
+                    }
+                }
             }
 
             entity.Baslik = model.Baslik;
@@ -163,6 +199,8 @@ public class SliderController : Controller
             entity.Aktif = model.Aktif;
 
             _context.SaveChanges();
+
+            TempData["Mesaj"] = $"{model.Baslik} slider' ı güncellendi.";
 
             return RedirectToAction("Index");
         }

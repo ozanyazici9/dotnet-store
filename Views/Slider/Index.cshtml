@@ -18,14 +18,14 @@
                     <table class="table table-bordered table-hover table-striped mb-0">
                         <thead class="table-secondary">
                             <tr>
-                                <th style="width: 20px;">Id</th>
-                                <th>Başlık</th>
-                                <th style="width: 80px;">Resim</th>
-
-                                <th>Açıklama</th>
-                                <th>Index</th>
-                                <th>Aktif</th>
-                                <th style="width: 84px;"></th>
+                                <th style="width: 10px;">Id</th>
+                                <th style="width: 200px;">Resim</th>
+                                <th style="width: 150px;">Başlık</th>
+                                
+                                <th style="width: 200px;">Acıklama</th>
+                                <th style="width: 70px;">Index</th>
+                                <th style="width: 70px;">Aktif</th>
+                                <th style="width: 55px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,14 +33,14 @@
                             {
                                 <tr>
                                     <td>@slider.Id</td>
-                                    <td>@slider.Baslik</td>
                                     <td>
-                                        <img src="img/@slider.ImageUrl" class="img-fluid" alt="">
+                                        <img src="img/@slider.ImageUrl" class="mw-100" alt="">
                                     </td>
-
+                                    <td>@slider.Baslik</td>
+                                    
                                     <td>@slider.Aciklama</td>
                                     <td>@slider.Index</td>
-                                    <td>
+                                    <td class="text-center">
                                         <i
                                         class="fa-solid @(slider.Aktif ? "fa-circle-check text-success" : "fa-circle-xmark text-danger")"></i>
                                     </td>
