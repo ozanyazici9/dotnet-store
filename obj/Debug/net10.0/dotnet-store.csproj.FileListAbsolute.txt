@@ -232,3 +232,4 @@ C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\gxs7qbtqa3-{0}-
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\49kswhn6un-{0}-sknwebeh6l-sknwebeh6l.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\lc716ummtx-{0}-qg6iiyp6rc-qg6iiyp6rc.gz
 C:\Users\ozany\Desktop\dotnet-store\obj\Debug\net10.0\compressed\na499i51te-{0}-jtyvnkcgln-jtyvnkcgln.gz
+C:\Users\ozany\Desktop\dotnet-store\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll

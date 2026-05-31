@@ -24,7 +24,7 @@
 
     <header>
         @await Html.PartialAsync(partialViewName: "Partials/Site/_Topbar")
-        @await Component.InvokeAsync("Navbar")
+        @RenderSection("Bar", required: false)
     </header>
 
     <main class="flex-grow-1">
