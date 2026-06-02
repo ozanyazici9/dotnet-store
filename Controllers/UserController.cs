@@ -13,8 +13,26 @@ public class UserController : Controller
         _userManager = userManager;
     }
 
-    public ActionResult Index()
+    public async Task<ActionResult> Index()
     {
-        return View(_userManager.Users);
+        var users = new List<UserGetModel>();
+
+        foreach (var user in _userManager.Users)
+        {
+            var userRole = await _userManager.GetRolesAsync(user);
+
+            users.Add(
+                new UserGetModel
+                {
+                    Id = user.Id,
+                    AdSoyad = user.AdSoyad,
+                    UserName = user.UserName!,
+                    Email = user.Email!,
+                    UserRole = userRole.ToList(),
+                }
+            );
+        }
+
+        return View(users);
     }
 }
