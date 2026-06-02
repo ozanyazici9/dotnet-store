@@ -35,4 +35,36 @@ public class UserController : Controller
 
         return View(users);
     }
+
+    public ActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> Create(UserCreateModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var newUser = new AppUser
+            {
+                UserName = model.Email,
+                AdSoyad = model.AdSoyad,
+                Email = model.Email,
+            };
+            var result = await _userManager.CreateAsync(newUser);
+
+            if (result.Succeeded)
+            {
+                TempData["Mesaj"] = $"{model.Email} kullanıcısı eklendi.";
+                return RedirectToAction("Index");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+        }
+
+        return View(model);
+    }
 }
