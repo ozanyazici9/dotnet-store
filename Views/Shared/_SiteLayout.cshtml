@@ -23,6 +23,7 @@
   <body class="bg-light d-flex flex-column min-vh-100">
 
     <header>
+        @await Html.PartialAsync(partialViewName: "Partials/Site/_Message")
         @await Html.PartialAsync(partialViewName: "Partials/Site/_Topbar")
         @RenderSection("Bar", required: false)
     </header>

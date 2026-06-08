@@ -9,7 +9,15 @@
 
           @if (User.Identity?.IsAuthenticated == true)
           {
-            <a asp-controller="Account" asp-action="Settings" class="btn btn-light">
+            @if (User.IsInRole("Admin"))
+            {
+              <a asp-controller="Admin" asp-action="Index" class="btn btn-danger" target="_blank">
+                <i class="fa-solid fa-lock"></i>
+                <span class="ms-1 d-none d-sm-inline-block">Admin</span>
+              </a>
+            }
+
+            <a asp-controller="Account" asp-action="EditUser" class="btn btn-light">
               <i class="fa-solid fa-right-to-bracket"></i>
               <span class="ms-1 d-none d-sm-inline-block">Hesabım</span>
             </a>
@@ -18,11 +26,6 @@
               <i class="fa fa-sign-out"></i>
               <span class="ms-1 d-none d-sm-inline-block">Çıkış Yap</span>
             </a>
-
-            <a asp-controller="Admin" asp-action="Index" class="btn btn-light">
-            <i class="fa-solid fa-user"></i>
-            <span class="ms-1 d-none d-sm-inline-block">Admin</span>
-          </a>
           }
           else
           {

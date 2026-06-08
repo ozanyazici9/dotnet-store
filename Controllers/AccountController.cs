@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using dotnet_store.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -121,9 +122,51 @@ public class AccountController : Controller
     }
 
     [Authorize]
-    public ActionResult Settings()
+    public async Task<ActionResult> EditUser()
     {
-        return View();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return NotFound();
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            return RedirectToAction("Login", "Account");
+
+        var model = new AccountEditUserModel { AdSoyad = user.AdSoyad, Email = user.Email! };
+
+        return View(model);
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<ActionResult> EditUser(AccountEditUserModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return NotFound();
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            return RedirectToAction("Login", "Account");
+
+        user.AdSoyad = model.AdSoyad;
+        user.Email = model.Email;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+            return View(model);
+        }
+
+        TempData["Mesaj"] = $"Bilgileriniz güncellendi.";
+
+        return View(model);
     }
 
     public ActionResult AccessDenied()
