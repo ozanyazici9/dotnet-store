@@ -1,0 +1,62 @@
+# Build outputs
+bin/
+obj/
+
+# .NET
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.userprefs
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Core
+wwwroot/lib/
+appsettings.Development.json
+
+# ASP.NET Identity
+# Scaffolded Identity sayfalarını takip etmek istiyorsan aşağıdaki satırı kaldır
+# Areas/Identity/
+
+# Entity Framework Core migrations (opsiyonel — migration'ları takip etmek istiyorsan kaldır)
+# Migrations/
+
+# SQLite veritabanı dosyaları
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Publish output
+publish/
+**/publish/
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+logs/
