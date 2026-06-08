@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace dotnet_store.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class RoleController : Controller
 {
     private RoleManager<AppRole> _roleManager;

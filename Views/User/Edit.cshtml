@@ -76,9 +76,9 @@
                             {
                                 <div class="row mb-3">
                                     <div class="form-check mx-3">
-                                        <input type="checkbox" name="SelectedRoles" value="@role" class="form-check-input"
+                                        <input type="checkbox" name="SelectedRoles" id="@role" value="@role" class="form-check-input"
                                             checked="@(Model.UserRoles.Contains(role) ? "checked" : null)" />
-                                        <label asp-for="SelectedRoles" class="form-check-label">@role</label>
+                                        <label for="@role" asp-for="SelectedRoles" class="form-check-label">@role</label>
                                     </div>
                                 </div>
                                 <span asp-validation-for="SelectedRoles" class="text-danger"></span>

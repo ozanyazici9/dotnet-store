@@ -1,9 +1,11 @@
 using dotnet_store.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace dotnet_store.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class UrunController : Controller
 {
     private readonly DataContext _context;
@@ -46,6 +48,7 @@ public class UrunController : Controller
         return View(urunler);
     }
 
+    [AllowAnonymous]
     public ActionResult List(string url, string q)
     {
         var query = _context.Urunler.Where(urun => urun.Aktif); // Queryable
