@@ -68,6 +68,7 @@ public class UrunController : Controller
         return View(query.ToList());
     }
 
+    [AllowAnonymous]
     public ActionResult Details(int id)
     {
         var urun = _context.Urunler.Find(id);
@@ -215,27 +216,24 @@ public class UrunController : Controller
     {
         if (id == null)
         {
+            TempData["Mesaj"] = "Geçersiz ürün.";
             return RedirectToAction("Index");
         }
 
         var entity = _context.Urunler.FirstOrDefault(u => u.Id == id);
 
-        if (entity != null)
+        if (entity == null)
         {
-            return View(entity);
-        }
-
-        return View();
-    }
-
-    [HttpPost]
-    public ActionResult DeleteConfirm(int? id)
-    {
-        if (id == null)
-        {
+            TempData["Mesaj"] = "Ürün Bulunamadı";
             return RedirectToAction("Index");
         }
 
+        return View(entity);
+    }
+
+    [HttpPost]
+    public ActionResult DeleteConfirm(int id)
+    {
         var entity = _context.Urunler.FirstOrDefault(u => u.Id == id);
 
         if (entity != null)

@@ -1,4 +1,4 @@
-@model IEnumerable<UserGetModel>
+@model List<UserGetModel>
 @{
     Layout = "_AdminLayout";
 }
@@ -13,7 +13,26 @@
                 </a>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <form method="get">
+                    <div class="input-group mb-2">
+                        <select name="role" class="form-select" asp-items="ViewBag.Roller">
+                            <option value="" selected>Hepsi</option>
+                        </select>
+                        <button class="btn btn-secondary" type="submit">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+                </form>
+
+                @if (Model.Count() == 0)
+                {
+                    <div class="alert alert-info">
+                        Bu role ait kullanıcı bulunmamaktadır.
+                    </div>
+                } 
+                else 
+                {
+                    <div class="table-responsive">
                     <table class="table table-bordered table-striped mb-0">
                         <thead class="table-secondary">
                             <tr>
@@ -22,7 +41,7 @@
                                 <th>Ad Soyad</th>
                                 <th>Username</th>
                                 <th>Email</th>
-                                <th style="width: 50px;"></th>
+                                <th style="width: 84px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,12 +73,18 @@
                                             asp-action="Edit" asp-route-id="@user.Id">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
+                                        <a class="btn btn-danger btn-sm" 
+                                            asp-action="Delete" asp-route-id="@user.Id">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 </div>
+                }
+                
             </div>
         </div>
     </div>

@@ -137,18 +137,12 @@ public class RoleController : Controller
                 if (result.Succeeded)
                 {
                     TempData["Mesaj"] = $"{role.Name} rolü silindi.";
-
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Role Silinemedi");
                     return RedirectToAction("Index");
                 }
             }
         }
 
-        ModelState.AddModelError("", "Role Silinemedi");
+        TempData["Mesaj"] = "Rol silme işlemi başarısız.";
         return RedirectToAction("Index");
     }
 }

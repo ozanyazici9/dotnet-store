@@ -2,6 +2,8 @@ using dotnet_store.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace dotnet_store.Controllers;
@@ -18,27 +20,50 @@ public class UserController : Controller
         _roleManager = roleManager;
     }
 
-    public async Task<ActionResult> Index()
+    public async Task<ActionResult> Index(string role)
     {
-        var users = new List<UserGetModel>();
+        ViewBag.Roller = new SelectList(_roleManager.Roles, "Name", "Name", role);
 
-        foreach (var user in _userManager.Users)
+        var model = new List<UserGetModel>();
+
+        if (!string.IsNullOrEmpty(role))
         {
-            var userRole = await _userManager.GetRolesAsync(user);
+            var filteredUsers = await _userManager.GetUsersInRoleAsync(role);
 
-            users.Add(
+            foreach (var u in filteredUsers)
+            {
+                var roles = await _userManager.GetRolesAsync(u);
+                model.Add(
+                    new UserGetModel
+                    {
+                        Id = u.Id,
+                        AdSoyad = u.AdSoyad,
+                        UserName = u.UserName!,
+                        Email = u.Email!,
+                        UserRole = roles.ToList(),
+                    }
+                );
+            }
+
+            return View(model);
+        }
+
+        foreach (var u in _userManager.Users.ToList())
+        {
+            var roles = await _userManager.GetRolesAsync(u);
+            model.Add(
                 new UserGetModel
                 {
-                    Id = user.Id,
-                    AdSoyad = user.AdSoyad,
-                    UserName = user.UserName!,
-                    Email = user.Email!,
-                    UserRole = (List<string>)userRole,
+                    Id = u.Id,
+                    AdSoyad = u.AdSoyad,
+                    UserName = u.UserName!,
+                    Email = u.Email!,
+                    UserRole = roles.ToList(),
                 }
             );
         }
 
-        return View(users);
+        return View(model);
     }
 
     public ActionResult Create()
@@ -160,6 +185,46 @@ public class UserController : Controller
         }
 
         TempData["Mesaj"] = $"{user.UserName} kullanıcısı güncellendi.";
+        return RedirectToAction("Index");
+    }
+
+    public async Task<ActionResult> Delete(string? id)
+    {
+        if (id == null)
+            return RedirectToAction("Index");
+
+        var user = await _userManager.FindByIdAsync(id);
+
+        if (id == null)
+        {
+            TempData["Mesaj"] = "Kullanıcı bulunamadı.";
+            return RedirectToAction("Index");
+        }
+
+        return View(user);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> DeleteConfirm(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            TempData["Mesaj"] = "Kullanıcı bulunamadı.";
+            return RedirectToAction("Index");
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+        {
+            TempData["Mesaj"] =
+                "Kullanıcı silinemedi: "
+                + string.Join(", ", result.Errors.Select(e => e.Description));
+            return RedirectToAction("Index");
+        }
+
+        TempData["Mesaj"] = "Kullanıcı silindi.";
+
         return RedirectToAction("Index");
     }
 }

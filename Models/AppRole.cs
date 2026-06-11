@@ -9,4 +9,8 @@ public class AppRole : IdentityRole<int>
     // [Display(Name = "Role Adı")]
     // [StringLength(30)]
     // public string RoleAdi { get; set; } = null!;
+    public static implicit operator List<object>(AppRole? v)
+    {
+        throw new NotImplementedException();
+    }
 }
