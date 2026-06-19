@@ -1,9 +1,12 @@
 using System.Security.Claims;
+using AspNetCoreGeneratedDocument;
 using dotnet_store.Models;
+using dotnet_store.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SQLitePCL;
@@ -15,19 +18,19 @@ public class AccountController : Controller
     private UserManager<AppUser> _userManager;
     private SignInManager<AppUser> _signInManager;
     private IEmailService _emailService;
-    private readonly DataContext _context;
+    private readonly ICartService _cartService;
 
     public AccountController(
         UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager,
         IEmailService emailService,
-        DataContext context
+        ICartService cartService
     )
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailService = emailService;
-        _context = context;
+        _cartService = cartService;
     }
 
     public ActionResult Index()
@@ -96,7 +99,7 @@ public class AccountController : Controller
                     await _userManager.ResetAccessFailedCountAsync(user);
                     await _userManager.SetLockoutEndDateAsync(user, null);
 
-                    await TransferCartToUser(user);
+                    await _cartService.TransferCartToUser(user.UserName!);
 
                     if (!string.IsNullOrEmpty(returnUrl))
                     {
@@ -127,41 +130,6 @@ public class AccountController : Controller
             }
         }
         return View(model);
-    }
-
-    private async Task TransferCartToUser(AppUser user)
-    {
-        var userCart = await _context
-            .Carts.Where(i => i.CustomerId == user.UserName)
-            .Include(i => i.CartItems)
-                .ThenInclude(i => i.Urun)
-            .FirstOrDefaultAsync();
-
-        var cookieCart = await _context
-            .Carts.Where(i => i.CustomerId == Request.Cookies["customerId"])
-            .Include(i => i.CartItems)
-                .ThenInclude(i => i.Urun)
-            .FirstOrDefaultAsync();
-
-        foreach (var item in cookieCart?.CartItems!)
-        {
-            var cartItem = userCart?.CartItems.FirstOrDefault(i => i.UrunId == item.UrunId);
-
-            if (cartItem != null)
-            {
-                cartItem.Miktar += item.Miktar;
-            }
-            else
-            {
-                userCart?.CartItems.Add(
-                    new CartItem { UrunId = item.UrunId, Miktar = item.Miktar }
-                );
-            }
-        }
-
-        _context.Carts.Remove(cookieCart);
-
-        await _context.SaveChangesAsync();
     }
 
     [Authorize]

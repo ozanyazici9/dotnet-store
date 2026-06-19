@@ -1,4 +1,6 @@
+using dotnet_store.Exceptions;
 using dotnet_store.Models;
+using dotnet_store.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,18 +10,17 @@ namespace dotnet_store.Controllers;
 
 public class CartController : Controller
 {
-    private readonly DataContext _context;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly ICartService _cartService;
 
-    public CartController(DataContext context, UserManager<AppUser> userManager)
+    public CartController(ICartService cartService)
     {
-        _context = context;
-        _userManager = userManager;
+        _cartService = cartService;
     }
 
     public async Task<ActionResult> Index()
     {
-        var cart = await GetCart();
+        var customerId = _cartService.GetCustomerId();
+        var cart = await _cartService.GetCart(customerId);
 
         var model = new CartViewModel
         {
@@ -45,59 +46,17 @@ public class CartController : Controller
     [HttpPost]
     public async Task<ActionResult> AddToCart(int urunId, int miktar = 1)
     {
-        var cart = await GetCart();
-
-        var urun = _context.Urunler.FirstOrDefault(i => i.Id == urunId);
-
-        if (urun == null)
+        try
         {
-            TempData["Mesaj"] = "Ürün bulunamadı";
-            return RedirectToAction("Index");
+            await _cartService.AddToCart(urunId, miktar);
+            TempData["Mesaj"] = "Ürün sepetinize eklendi";
         }
-
-        cart.AddItem(urunId, miktar);
-
-        await _context.SaveChangesAsync();
+        catch (NotFoundException e)
+        {
+            TempData["Mesaj"] = e.Message;
+        }
 
         return RedirectToAction("Index");
-    }
-
-    private async Task<Cart> GetCart()
-    {
-        // kulannıcı giriş yapmamışsa customerıd yi cookie den çek
-        var customerId = User.Identity?.Name ?? Request.Cookies["customerId"];
-
-        var cart = await _context
-            .Carts.Where(i => i.CustomerId == customerId) // sadece bu kullanıcının sepeti
-            .Include(i => i.CartItems) // CartItem'ları da getir (JOIN)
-                .ThenInclude(i => i.Urun) // Her CartItem'ın Urun'unu da getir
-            .FirstOrDefaultAsync(); // o kullanıcıya ait tek sepeti al
-
-        if (cart == null)
-        {
-            // customerId nin olupda cart ın olmadığı durumlar olabilir kullanıcı yeni kayıt olmuştur ve sepeti henüz oluşturulmamıştır veya bir şekilde cookideki cart nesnesi silinmiştir. Bu durumlarada tekrar customerId oluşturmaya gerek yoktur bu yüzden kontrol yapılır.
-            customerId = User.Identity?.Name;
-
-            if (string.IsNullOrEmpty(customerId))
-            {
-                // customerıd yi cookie den de alamazsa customerıd oluşturuyoruz ve bunu cart oluşturmada kullanıyoruz
-                customerId = Guid.NewGuid().ToString();
-
-                var cookieOptions = new CookieOptions
-                {
-                    Expires = DateTime.Now.AddMonths(1),
-                    IsEssential = true,
-                };
-
-                // cookie sunucu tarafında burada oluşturuluyor ve response da client a variliyor. Bizde GetCart da cookie yi client dan gelen request üzerinden okuyarak kontrol ediyoruz
-                Response.Cookies.Append("customerId", customerId, cookieOptions);
-            }
-
-            cart = new Cart { CustomerId = customerId };
-            _context.Carts.Add(cart); // eğer cart null ise kullanıcı kayıtlı değildir. burada da savechanges demiyoruz ama change tracking sistemi sayesinde context e eklemiş oluyoruz ve cart nesnesi kontrolümüz altında oluyor daha sonra cart ı geri döndürüyoruz. eğer giriş yapamamış kullanıcı sepete ürün eklerse cart a ürünüde ekleyip db ye kaydediyoruz.
-        }
-
-        return cart;
     }
 
     public ActionResult Checkout()
@@ -114,19 +73,15 @@ public class CartController : Controller
     [HttpPost]
     public async Task<ActionResult> RemoveItem(int urunId, int miktar)
     {
-        var cart = await GetCart();
-
-        var item = _context.Urunler.FirstOrDefault(i => i.Id == urunId);
-
-        if (item == null)
+        try
         {
-            TempData["Mesaj"] = "Ürün bulunamadı";
-            return RedirectToAction("Index");
+            await _cartService.RemoveItem(urunId, miktar);
+            TempData["Mesaj"] = $"Id: {urunId} olan ürün kaldırıldı";
         }
-
-        cart.DeleteItem(urunId, miktar);
-
-        await _context.SaveChangesAsync();
+        catch (NotFoundException e)
+        {
+            TempData["Mesaj"] = e.Message;
+        }
 
         return RedirectToAction("Index");
     }
