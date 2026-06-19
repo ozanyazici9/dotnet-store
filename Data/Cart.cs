@@ -9,6 +9,35 @@ public class Cart
     // CarItem a ulaşmak için (Include)
     public List<CartItem> CartItems { get; set; } = new();
 
+    public void AddItem(int urunId, int miktar)
+    {
+        var item = CartItems.FirstOrDefault(i => i.UrunId == urunId);
+
+        if (item != null)
+        {
+            item.Miktar += miktar;
+        }
+        else
+        {
+            CartItems.Add(new CartItem { UrunId = urunId, Miktar = miktar });
+        }
+    }
+
+    public void DeleteItem(int urunId, int miktar)
+    {
+        var item = CartItems.FirstOrDefault(i => i.UrunId == urunId);
+
+        if (item != null)
+        {
+            item.Miktar -= miktar;
+
+            if (item.Miktar == 0)
+            {
+                CartItems.Remove(item);
+            }
+        }
+    }
+
     public double AraToplam()
     {
         return CartItems.Sum(i => i.Urun.Fiyat * i.Miktar);

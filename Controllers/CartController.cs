@@ -47,18 +47,15 @@ public class CartController : Controller
     {
         var cart = await GetCart();
 
-        var item = cart.CartItems.FirstOrDefault(i => i.UrunId == urunId);
+        var urun = _context.Urunler.FirstOrDefault(i => i.Id == urunId);
 
-        if (item != null)
+        if (urun == null)
         {
-            // daha önce aynı ürün eklenmiş
-            item.Miktar++;
+            TempData["Mesaj"] = "Ürün bulunamadı";
+            return RedirectToAction("Index");
         }
-        else
-        {
-            // ilk defa ekleniyor
-            cart.CartItems.Add(new CartItem { UrunId = urunId, Miktar = miktar });
-        }
+
+        cart.AddItem(urunId, miktar);
 
         await _context.SaveChangesAsync();
 
@@ -115,22 +112,21 @@ public class CartController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult> RemoveItem(int cartItemId)
+    public async Task<ActionResult> RemoveItem(int urunId, int miktar)
     {
         var cart = await GetCart();
-        var item = cart.CartItems.FirstOrDefault(i => i.CartItemId == cartItemId);
 
-        if (item != null)
-        {
-            cart.CartItems.Remove(item);
-            await _context.SaveChangesAsync();
+        var item = _context.Urunler.FirstOrDefault(i => i.Id == urunId);
 
-            TempData["Mesaj"] = $"{item.Urun.UrunAdi} Ürünü sepetinizden kaldırıldı.";
-        }
-        else
+        if (item == null)
         {
-            TempData["Mesaj"] = "Ürün Bulunamadı";
+            TempData["Mesaj"] = "Ürün bulunamadı";
+            return RedirectToAction("Index");
         }
+
+        cart.DeleteItem(urunId, miktar);
+
+        await _context.SaveChangesAsync();
 
         return RedirectToAction("Index");
     }

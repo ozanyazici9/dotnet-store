@@ -50,7 +50,8 @@
                   </div>
                   <div class="col-1 text-center">
                     <form method="post" asp-controller="Cart" asp-action="RemoveItem">
-                      <input type="hidden" name="cartItemId" value="@item.CartItemId">
+                      <input type="hidden" name="urunId" value="@item.UrunId">
+                      <input type="hidden" name="miktar" value="1">
                       <button type="submit" class="btn btn-sm btn-danger">
                         <i class="fa-solid fa-trash"></i>
                       </button>
