@@ -1,15 +1,9 @@
 using System.Security.Claims;
-using AspNetCoreGeneratedDocument;
 using dotnet_store.Models;
 using dotnet_store.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using SQLitePCL;
 
 namespace dotnet_store.Controllers;
 
