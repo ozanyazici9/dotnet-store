@@ -56,17 +56,6 @@ public class CartController : Controller
         return RedirectToAction("Index");
     }
 
-    public ActionResult Checkout()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    public ActionResult Checkout(int id)
-    {
-        return View();
-    }
-
     [HttpPost]
     public async Task<ActionResult> RemoveItem(int urunId, int miktar)
     {
