@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_store.Models;
 
@@ -10,9 +11,11 @@ using dotnet_store.Models;
 namespace dotnet_store.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260621061129_UpdateOrder")]
+    partial class UpdateOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.7");
@@ -355,6 +358,7 @@ namespace dotnet_store.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SiparisNotu")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("SiparisTarihi")

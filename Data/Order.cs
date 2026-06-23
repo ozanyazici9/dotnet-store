@@ -11,7 +11,7 @@ public class Order
     public string PostaKodu { get; set; } = null!;
     public string Telefon { get; set; } = null!;
     public double ToplamFiyat { get; set; }
-    public string SiparisNotu { get; set; } = null!;
+    public string? SiparisNotu { get; set; }
     public List<OrderItem> OrderItems { get; set; } = new();
 }
 
