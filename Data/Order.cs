@@ -13,6 +13,16 @@ public class Order
     public double ToplamFiyat { get; set; }
     public string? SiparisNotu { get; set; }
     public List<OrderItem> OrderItems { get; set; } = new();
+
+    public double AraToplam()
+    {
+        return OrderItems.Sum(i => i.Urun.Fiyat * i.Miktar);
+    }
+
+    public double Vergi()
+    {
+        return OrderItems.Sum(i => i.Urun.Fiyat * i.Miktar) * 0.2;
+    }
 }
 
 public class OrderItem

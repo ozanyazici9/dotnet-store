@@ -1,0 +1,105 @@
+@model List<OrderGetModel>
+
+@section Bar
+{
+    <section class="bg-primary p-3">
+        <div class="container">
+            <nav>
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="#">Anasayfa</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        Parola Sıfırla
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+}
+
+<section class="mt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                @await Html.PartialAsync(partialViewName: "Partials/Site/_AccountEditMenu")
+            </div>
+            <div class="col-9">
+                <div class="card shadow">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Siparişler</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var order in @Model)
+                        {
+                            <div class="accordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#panel@(order.Id)">
+                                            Sipariş No : #@order.Id
+                                        </button>
+                                    </h2>
+                                    <div id="panel@(order.Id)" class="accordion-collapse collapse">
+                                        <div class="accordion-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered mb-2">
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td colspan="2">Teslim Tarihi</td>
+                                                            <td colspan="3">@order.SiparisTarihi.AddDays(2).ToString("dd.MM.yyyy HH:mm")</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">Ad Soyad</td>
+                                                            <td colspan="3">@order.AdSoyad</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">Telefon</td>
+                                                            <td colspan="3">@order.Telefon</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">Teslimat Adresi</td>
+                                                            <td colspan="3">@order.AdresSatiri / @order.Sehir / @order.PostaKodu</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style=" width: 100px;">
+                                                                    <a asp-controller="Urun" asp-action="Details" asp-route-id="@order.OrderItems[0].Urun.Id"><img src="~/img/@order.OrderItems[0].Urun.Resim" class="img-fluid" alt=""></a>
+                                                                </td>
+                                                                <td>@order.OrderItems[0].Urun.UrunAdi</td>
+                                                                <td>@order.OrderItems[0].Urun.Fiyat ₺</td> 
+                                                                <td>
+                                                                    @order.OrderItems[0].Miktar
+                                                                </td>
+                                                                <td>
+                                                                    @(order.OrderItems[0].Miktar * order.OrderItems[0].Urun.Fiyat) ₺
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="3"></td>
+                                                                <td>Ara Toplam</td>
+                                                                <td>@order.AraToplam ₺</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="3"></td>
+                                                                <td>Vergi</td>
+                                                                <td>@order.Vergi ₺ (20%)</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="3"></td>
+                                                                <td>Toplam</td>
+                                                                <td>@order.ToplamFiyat ₺</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

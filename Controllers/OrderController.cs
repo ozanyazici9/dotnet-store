@@ -2,6 +2,7 @@ using dotnet_store.Models;
 using dotnet_store.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 
 namespace dotnet_store.Controllers;
@@ -16,6 +17,37 @@ public class OrderController : Controller
     {
         _cartService = cartService;
         _context = context;
+    }
+
+    public async Task<ActionResult> Index()
+    {
+        var Orders = await _context
+            .Orders.Select(i => new OrderGetModel
+            {
+                Id = i.Id,
+                SiparisTarihi = i.SiparisTarihi,
+                AdresSatiri = i.AdresSatiri,
+                PostaKodu = i.PostaKodu,
+                Sehir = i.Sehir,
+                SiparisNotu = i.SiparisNotu,
+                AdSoyad = i.AdSoyad,
+                Telefon = i.Telefon,
+                ToplamFiyat = i.ToplamFiyat,
+                UserName = i.UserName,
+                OrderItems = i
+                    .OrderItems.Select(i => new OrderItemModel
+                    {
+                        Fiyat = i.Fiyat,
+                        Id = i.Id,
+                        Miktar = i.Miktar,
+                        Urun = i.Urun,
+                        UrunId = i.UrunId,
+                    })
+                    .ToList(),
+            })
+            .ToListAsync();
+
+        return View(Orders);
     }
 
     public async Task<ActionResult> Checkout()
@@ -83,5 +115,84 @@ public class OrderController : Controller
         }
 
         return View(orderId);
+    }
+
+    public ActionResult Details(int Id)
+    {
+        var order = _context
+            .Orders.Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Urun)
+            .FirstOrDefault(o => o.Id == Id);
+
+        if (order == null)
+            return NotFound();
+
+        var model = new OrderGetModel
+        {
+            Id = order.Id,
+            SiparisTarihi = order.SiparisTarihi,
+            AdresSatiri = order.AdresSatiri,
+            PostaKodu = order.PostaKodu,
+            Sehir = order.Sehir,
+            SiparisNotu = order.SiparisNotu,
+            AdSoyad = order.AdSoyad,
+            Telefon = order.Telefon,
+            ToplamFiyat = order.ToplamFiyat,
+            UserName = order.UserName,
+            OrderItems = order
+                .OrderItems.Select(oi => new OrderItemModel
+                {
+                    Id = oi.Id,
+                    UrunId = oi.UrunId,
+                    Miktar = oi.Miktar,
+                    Fiyat = oi.Fiyat,
+                    Urun = oi.Urun,
+                })
+                .ToList(),
+            AraToplam = order.AraToplam(), // Urun artık yüklü, doğru çalışır
+            Vergi = order.Vergi(),
+        };
+
+        return View(model);
+    }
+
+    public ActionResult OrderList()
+    {
+        var userName = User.Identity?.Name;
+        if (userName == null)
+            return NotFound();
+
+        var orders = _context
+            .Orders.Where(i => i.UserName == userName)
+            .Include(i => i.OrderItems)
+                .ThenInclude(i => i.Urun)
+            .ToList();
+
+        var model = orders
+            .Select(i => new OrderGetModel
+            {
+                Id = i.Id,
+                AdSoyad = i.AdSoyad,
+                SiparisTarihi = i.SiparisTarihi,
+                AdresSatiri = i.AdresSatiri,
+                Sehir = i.Sehir,
+                PostaKodu = i.PostaKodu,
+                ToplamFiyat = i.ToplamFiyat,
+                Telefon = i.Telefon,
+                OrderItems = i
+                    .OrderItems.Select(i => new OrderItemModel
+                    {
+                        Fiyat = i.Fiyat,
+                        Miktar = i.Miktar,
+                        Urun = i.Urun,
+                        UrunId = i.UrunId,
+                    })
+                    .ToList(),
+                AraToplam = i.AraToplam(),
+                Vergi = i.Vergi(),
+            })
+            .ToList();
+
+        return View(model);
     }
 }
