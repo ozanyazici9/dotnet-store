@@ -33,4 +33,29 @@ public class OrderCreateModel
     [Display(Name = "Sipariş Notu")]
     [StringLength(200)]
     public string? SiparisNotu { get; set; } = null!;
+
+    [Required(ErrorMessage = "Kart İsmi alanı bos gecilemez")]
+    [StringLength(50)]
+    [Display(Name = "Kart üzerindeki isim")]
+    public string CartName { get; set; } = null!;
+
+    [Required(ErrorMessage = "Kart Numarası alanı bos gecilemez")]
+    [StringLength(16)]
+    [Display(Name = "Kart Numarası")]
+    public string CartNumber { get; set; } = null!;
+
+    [Required(ErrorMessage = "Kart geçerlilik yılı alanı bos gecilemez")]
+    [StringLength(4)]
+    [Display(Name = "Kart Geçerlilik Yılı")]
+    public string CartExpirationYear { get; set; } = null!;
+
+    [Required(ErrorMessage = "Kart geçerlilik ayı alanı bos gecilemez")]
+    [StringLength(2)]
+    [Display(Name = "Kart Geçerlilik Ayı")]
+    public string CartExpirationMonth { get; set; } = null!;
+
+    [Required(ErrorMessage = "Kart CVV alanı bos gecilemez")]
+    [StringLength(3)]
+    [Display(Name = "Kart cvv")]
+    public string CartCVV { get; set; } = null!;
 }
