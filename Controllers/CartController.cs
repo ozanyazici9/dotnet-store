@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_store.Controllers;
 
-public class CartController : Controller
+public class CartController : BaseController
 {
     private readonly ICartService _cartService;
 
@@ -16,8 +16,8 @@ public class CartController : Controller
 
     public async Task<ActionResult> Index()
     {
-        var customerId = _cartService.GetCustomerId();
-        var cart = await _cartService.GetCart(customerId);
+        var customerUserName = GetCustomerUserName();
+        var cart = await _cartService.GetCart(customerUserName);
 
         var model = new CartViewModel
         {
@@ -43,15 +43,8 @@ public class CartController : Controller
     [HttpPost]
     public async Task<ActionResult> AddToCart(int urunId, int miktar = 1)
     {
-        try
-        {
-            await _cartService.AddToCart(urunId, miktar);
-            TempData["Mesaj"] = "Ürün sepetinize eklendi";
-        }
-        catch (NotFoundException e)
-        {
-            TempData["Mesaj"] = e.Message;
-        }
+        await _cartService.AddToCart(urunId, miktar, GetCustomerUserName());
+        TempData["Mesaj"] = "Ürün sepetinize eklendi";
 
         return RedirectToAction("Index");
     }
@@ -59,15 +52,8 @@ public class CartController : Controller
     [HttpPost]
     public async Task<ActionResult> RemoveItem(int urunId, int miktar)
     {
-        try
-        {
-            await _cartService.RemoveItem(urunId, miktar);
-            TempData["Mesaj"] = $"Id: {urunId} olan ürün kaldırıldı";
-        }
-        catch (NotFoundException e)
-        {
-            TempData["Mesaj"] = e.Message;
-        }
+        await _cartService.RemoveItem(urunId, miktar, GetCustomerUserName());
+        TempData["Mesaj"] = $"Id: {urunId} olan ürün kaldırıldı";
 
         return RedirectToAction("Index");
     }

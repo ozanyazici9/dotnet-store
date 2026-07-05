@@ -4,6 +4,7 @@ public class Cart
 {
     public int CartId { get; set; }
 
+    // CustomerId property Username bilgisini taşır.
     public string CustomerId { get; set; } = null!;
 
     // CarItem a ulaşmak için (Include)

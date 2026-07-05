@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace dotnet_store.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class UrunController : Controller
+public class UrunController : BaseController
 {
     private readonly DataContext _context;
 

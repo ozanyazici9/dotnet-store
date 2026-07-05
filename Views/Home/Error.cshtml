@@ -1,0 +1,44 @@
+@{
+    Layout = "_NoFooterLayout";
+}
+
+<section class="d-flex align-items-center" style="min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center align-items-center g-5">
+            <div class="col-md-5 text-center">
+                @if (ViewBag.Code?.ToString() == "401")
+                {
+                    <img src="~/img/401.svg" class="img-fluid" alt="401 - Yetkisiz Erişim" style="max-height: 320px;">
+                    <p class="small text-muted mt-1">
+                        <a href="https://storyset.com/internet" target="_blank" rel="noopener">Illustration by Storyset</a>
+                    </p>
+                }
+                else if (ViewBag.Code?.ToString() == "404")
+                {
+                    <img src="~/img/404.jpg" class="img-fluid rounded-3" alt="404 - Sayfa Bulunamadı"
+                         style="max-height: 320px;">
+                }
+            </div>
+            <div class="col-md-6 text-center text-md-start">
+                <span class="badge bg-light text-secondary fs-6 mb-3">Hata @ViewBag.Code</span>
+                <h2 class="fw-bold mb-3">
+                    @if (ViewBag.Code?.ToString() == "401")
+                    {
+                        <text>Bu sayfaya erişim yetkiniz yok</text>
+                    }
+                    else if (ViewBag.Code?.ToString() == "404")
+                    {
+                        <text>Aradığınız sayfa bulunamadı</text>
+                    }
+                </h2>
+                @if (ViewBag.Message != null)
+                {
+                    <p class="text-muted fs-5 mb-4">@ViewBag.Message</p>
+                }
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg px-4">
+                    Ana Sayfaya Dön
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

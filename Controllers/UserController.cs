@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace dotnet_store.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class UserController : Controller
+public class UserController : BaseController
 {
     private UserManager<AppUser> _userManager;
     private RoleManager<AppRole> _roleManager;

@@ -1,14 +1,18 @@
+using dotnet_store.Exceptions;
 using dotnet_store.Models;
 using dotnet_store.Services;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddTransient<IEmailService, SmtpEmailService>();
 builder.Services.AddTransient<ICartService, CartService>();
+builder.Services.AddTransient<IAccountService, AccountService>();
+builder.Services.AddTransient<IKategoriService, KategoriService>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -30,7 +34,6 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireDigit = false;
 
     options.User.RequireUniqueEmail = true;
-    // options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
 
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
@@ -46,25 +49,42 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Global exception handler her ortamda aktif
+app.UseExceptionHandler(errorApp =>
 {
-    app.UseExceptionHandler("/Home/Error");
+    errorApp.Run(async context =>
+    {
+        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+        if (exception is AppException appEx)
+        {
+            context.Response.Redirect(
+                $"/Home/Error?code={appEx.StatusCode}&message={Uri.EscapeDataString(appEx.Message)}"
+            );
+        }
+        else
+        {
+            context.Response.Redirect("/Home/Error?code=500");
+        }
+
+        await Task.CompletedTask;
+    });
+});
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
-// runtime da upload edilen statik dosyaları serve etmez. Çünkü compile time da mevcut olan statik dosyaları sıkıştırır ve performas sağlayarak daha hızlı serve edebilir. Runtime da gelen dosya compile time da bulunmadığı için onu serve edemez.
-//app.MapStaticAssets();
-
-// runtime da upload edilen statik dosyaları serve edebilir yani bir url ile ulaşmanı sağlar.
-app.UseStaticFiles();
-
-// urunler/telefon
 
 app.MapControllerRoute(
         name: "urunler_by_kategori",

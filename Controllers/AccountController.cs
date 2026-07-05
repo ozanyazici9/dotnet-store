@@ -7,24 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_store.Controllers;
 
-public class AccountController : Controller
+public class AccountController : BaseController
 {
     private UserManager<AppUser> _userManager;
     private SignInManager<AppUser> _signInManager;
-    private IEmailService _emailService;
-    private readonly ICartService _cartService;
+    private readonly IAccountService _accountService;
 
     public AccountController(
         UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager,
-        IEmailService emailService,
-        ICartService cartService
+        IAccountService accountService
     )
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _emailService = emailService;
-        _cartService = cartService;
+        _accountService = accountService;
     }
 
     public ActionResult Index()
@@ -73,56 +70,24 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<ActionResult> Login(AccountLoginModel model, string? returnUrl)
     {
-        if (ModelState.IsValid)
-        {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+        if (!ModelState.IsValid)
+            return View(model);
 
-            if (user != null)
-            {
-                await _signInManager.SignOutAsync();
+        var result = await _accountService.Login(model.Email, model.Password, model.BeniHatirla);
 
-                var result = await _signInManager.PasswordSignInAsync(
-                    user,
-                    model.Password,
-                    model.BeniHatirla,
-                    true
-                );
+        if (result.Succeeded)
+            return !string.IsNullOrEmpty(returnUrl)
+                ? Redirect(returnUrl)
+                : RedirectToAction("Index", "Home");
 
-                if (result.Succeeded)
-                {
-                    await _userManager.ResetAccessFailedCountAsync(user);
-                    await _userManager.SetLockoutEndDateAsync(user, null);
+        if (result.IsLockedOut)
+            ModelState.AddModelError(
+                "",
+                $"Hesabınız kilitlendi {result.LockoutMinutesLeft} dakika bekleyiniz"
+            );
+        else
+            ModelState.AddModelError("", result.ErrorMessage!);
 
-                    await _cartService.TransferCartToUser(user.UserName!);
-
-                    if (!string.IsNullOrEmpty(returnUrl))
-                    {
-                        return Redirect(returnUrl);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                }
-                else if (result.IsLockedOut)
-                {
-                    var lockoutDate = await _userManager.GetLockoutEndDateAsync(user);
-                    var timeLeft = lockoutDate!.Value - DateTime.UtcNow;
-                    ModelState.AddModelError(
-                        "",
-                        $"Hesabınız kilitlendi. Lütfen {timeLeft.Minutes + 1} dakika bekleyiniz."
-                    );
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Hatalı parola");
-                }
-            }
-            else
-            {
-                ModelState.AddModelError("", "Hatalı email");
-            }
-        }
         return View(model);
     }
 
@@ -136,11 +101,9 @@ public class AccountController : Controller
     [Authorize]
     public async Task<ActionResult> EditUser()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
-            return NotFound();
+        var userId = GetUserId();
 
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId!);
         if (user == null)
             return RedirectToAction("Login", "Account");
 
@@ -156,29 +119,17 @@ public class AccountController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
-            return NotFound();
-
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-            return RedirectToAction("Login", "Account");
-
-        user.AdSoyad = model.AdSoyad;
-        user.Email = model.Email;
-
-        var result = await _userManager.UpdateAsync(user);
+        var result = await _accountService.EditUser(model.AdSoyad, model.Email, GetUserId()!);
 
         if (!result.Succeeded)
         {
-            foreach (var error in result.Errors)
-                ModelState.AddModelError("", error.Description);
+            ModelState.AddModelError("", result.ErrorMessage!);
             return View(model);
         }
 
         TempData["Mesaj"] = $"Bilgileriniz güncellendi.";
 
-        return View(model);
+        return RedirectToAction("EditUser", "Account");
     }
 
     public ActionResult AccessDenied()
@@ -198,31 +149,24 @@ public class AccountController : Controller
     {
         // Güvenlik Kontrolü
         if (!ModelState.IsValid)
-            return View();
+            return View(model);
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
-            return NotFound();
-
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-            return RedirectToAction("Login", "Account");
-
-        var result = await _userManager.ChangePasswordAsync(
-            user,
+        var result = await _accountService.ChangePassword(
             model.CurrentPassword,
-            model.NewPassword
+            model.NewPassword,
+            GetCustomerUserName()
         );
 
         if (result.Succeeded)
         {
             TempData["Mesaj"] = "Parola Güncellendi";
+            return View();
         }
-
-        foreach (var error in result.Errors)
-            ModelState.AddModelError("", error.Description);
-
-        return View();
+        else
+        {
+            ModelState.AddModelError("", result.ErrorMessage!);
+            return View();
+        }
     }
 
     public ActionResult ForgotPassword()
@@ -239,26 +183,17 @@ public class AccountController : Controller
             return View();
         }
 
-        var user = await _userManager.FindByEmailAsync(email);
+        // Eposta gönder
+        var resetLink = Url.Action("ResetPassword", "Account", null, Request.Scheme);
+        var result = await _accountService.ForgotPassword(email, resetLink!);
 
-        if (user == null)
+        if (!result.Succeeded)
         {
-            TempData["Mesaj"] = "Bu eposta adresi mevcut değil";
+            TempData["Mesaj"] = result.ErrorMessage!;
             return View();
         }
 
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-        // Eposta gönder
-        var url = Url.Action("ResetPassword", "Account", new { userId = user.Id, token });
-
-        var baseUrl = $"{Request.Scheme}://{Request.Host}";
-        var link = $"<a href='{baseUrl}{url}'>Şifre Yenile</a>";
-
-        await _emailService.SendEmailAsync(user.Email!, "Parola Sıfırlama", link);
-
         TempData["Mesaj"] = "Eposta adresine gönderilen link ile şifreni sıfırlayabilirsin.";
-
         return RedirectToAction("Login");
     }
 
@@ -289,18 +224,15 @@ public class AccountController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var user = await _userManager.FindByEmailAsync(model.Email);
-        if (user == null)
-        {
-            TempData["Mesaj"] = "Kullanıcı Bulunamadı";
-            return RedirectToAction("Login");
-        }
+        var result = await _accountService.ResetPassword(
+            model.Email,
+            model.Token,
+            model.NewPassword
+        );
 
-        var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
         if (!result.Succeeded)
         {
-            foreach (var error in result.Errors)
-                ModelState.AddModelError("", error.Description);
+            ModelState.AddModelError("", result.ErrorMessage!);
             return View(model);
         }
 

@@ -6,12 +6,11 @@ using Iyzipay.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 namespace dotnet_store.Controllers;
 
 [Authorize]
-public class OrderController : Controller
+public class OrderController : BaseController
 {
     private readonly ICartService _cartService;
     private readonly DataContext _context;
@@ -69,7 +68,7 @@ public class OrderController : Controller
     [HttpPost]
     public async Task<ActionResult> Checkout(OrderCreateModel model)
     {
-        var userName = _cartService.GetCustomerId();
+        var userName = GetCustomerUserName();
 
         var cart = await _cartService.GetCart(userName);
 

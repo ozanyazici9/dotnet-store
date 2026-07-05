@@ -18,4 +18,12 @@ public class HomeController : Controller
         ViewData["Kategoriler"] = _context.Kategoriler.ToList();
         return View(urunler);
     }
+
+    public ActionResult Error(int code, string? message)
+    {
+        ViewBag.Code = code;
+        ViewBag.Message = message;
+
+        return View();
+    }
 }

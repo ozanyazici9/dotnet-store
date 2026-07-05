@@ -1,17 +1,21 @@
 using dotnet_store.Models;
+using dotnet_store.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_store.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class KategoriController : Controller
+public class KategoriController : BaseController
 {
     private readonly DataContext _context;
 
-    public KategoriController(DataContext context)
+    private readonly IKategoriService _kategoriService;
+
+    public KategoriController(DataContext context, IKategoriService kategoriService)
     {
         _context = context;
+        _kategoriService = kategoriService;
     }
 
     public ActionResult Index()
@@ -36,17 +40,13 @@ public class KategoriController : Controller
     [HttpPost]
     public ActionResult Create(KategoriCreateModel model)
     {
-        if (ModelState.IsValid)
-        {
-            var entity = new Kategori() { KategoriAdi = model.KategoriAdi, Url = model.Url };
+        if (!ModelState.IsValid)
+            return View(model);
 
-            _context.Kategoriler.Add(entity);
-            _context.SaveChanges();
+        _kategoriService.Create(model.KategoriAdi, model.Url);
 
-            return RedirectToAction("Index");
-        }
-
-        return View(model);
+        TempData["Mesaj"] = $"{model.KategoriAdi} kategorisi eklendi";
+        return RedirectToAction("Index");
     }
 
     public ActionResult Edit(int id)
@@ -66,69 +66,43 @@ public class KategoriController : Controller
     public ActionResult Edit(int id, KategoriEditModel model)
     {
         if (id != model.Id)
-        {
             return RedirectToAction("Index");
-        }
 
-        if (ModelState.IsValid)
-        {
-            var entity = _context.Kategoriler.FirstOrDefault(i => i.Id == model.Id);
+        if (!ModelState.IsValid)
+            return View(model);
 
-            if (entity != null)
-            {
-                entity.KategoriAdi = model.KategoriAdi;
-                entity.Url = model.Url;
+        _kategoriService.Edit(model.Id, model.KategoriAdi, model.Url);
 
-                _context.SaveChanges();
-
-                TempData["Mesaj"] = $"{entity.KategoriAdi} kategorisi güncellendi";
-
-                return RedirectToAction("Index");
-            }
-        }
-
-        return View(model);
-    }
-
-    public ActionResult Delete(int? id)
-    {
-        if (id == null)
-        {
-            return RedirectToAction("Index");
-        }
-
-        // Silme işlemi tek satırda şöyle de yapılabilir; _context.Kategoriler.Where(i => i.Id == id).ExecuteDelete();
-
-        var entity = _context.Kategoriler.FirstOrDefault(i => i.Id == id);
-
-        if (entity != null)
-        {
-            return View(entity);
-        }
-
+        TempData["Mesaj"] = $"{model.KategoriAdi} kategorisi güncellendi";
         return RedirectToAction("Index");
     }
 
-    [HttpPost]
-    public ActionResult DeleteConfirm(int? id)
+    public async Task<ActionResult> Delete(int? id)
     {
         if (id == null)
-        {
             return RedirectToAction("Index");
-        }
 
         // Silme işlemi tek satırda şöyle de yapılabilir; _context.Kategoriler.Where(i => i.Id == id).ExecuteDelete();
 
-        var entity = _context.Kategoriler.FirstOrDefault(i => i.Id == id);
+        var entity = await _context.Kategoriler.FindAsync(id);
 
-        if (entity != null)
-        {
-            _context.Kategoriler.Remove(entity);
-            _context.SaveChanges();
+        if (entity == null)
+            return RedirectToAction("Index");
 
-            TempData["Mesaj"] = $"{entity.KategoriAdi} kategorisi silindi";
-        }
+        return View(entity);
+    }
 
+    [HttpPost]
+    public async Task<ActionResult> DeleteConfirm(int? id)
+    {
+        if (id == null)
+            return RedirectToAction("Index");
+
+        // Silme işlemi tek satırda şöyle de yapılabilir; _context.Kategoriler.Where(i => i.Id == id).ExecuteDelete();
+
+        await _kategoriService.Delete(id.Value);
+
+        TempData["Mesaj"] = "Kategori silindi";
         return RedirectToAction("Index");
     }
 }
