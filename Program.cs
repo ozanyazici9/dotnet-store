@@ -96,6 +96,14 @@ app.MapControllerRoute(
 app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-SeedDatabase.Initialize(app);
+// Önce Migraitonları uygula
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<DataContext>();
+    context.Database.Migrate();
+}
+
+// Seed Database verilerini ekle
+await SeedDatabase.Initialize(app);
 
 app.Run();

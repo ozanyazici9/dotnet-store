@@ -21,6 +21,7 @@ artifacts/
 # ASP.NET Core
 wwwroot/lib/
 appsettings.Development.json
+appsettings.Production.json
 
 # ASP.NET Identity
 # Scaffolded Identity sayfalarını takip etmek istiyorsan aşağıdaki satırı kaldır

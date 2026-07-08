@@ -4,7 +4,7 @@ namespace dotnet_store.Models;
 
 public static class SeedDatabase
 {
-    public static async void Initialize(IApplicationBuilder app)
+    public static async Task Initialize(IApplicationBuilder app)
     {
         var userManager = app
             .ApplicationServices.CreateScope()
