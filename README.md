@@ -93,21 +93,30 @@ cd dotnet-store
 # Restore packages
 dotnet restore
 
-# Update appsettings.json with your SQL Server connection string
+# Configure your SQL Server connection string
+# in appsettings.json
 
-# Apply migrations
-dotnet ef database update
-
-# Run the project
+# Run the application
 dotnet run
 ```
+
+On first startup, the application will automatically:
+
+- Apply all Entity Framework Core migrations
+- Create the database schema
+- Seed the default roles and administrator account (if they do not already exist)
+
+```
+> **Note:** Before running the application, create an empty SQL Server database and update the connection string in `appsettings.json`.
 
 The application will automatically apply pending Entity Framework Core migrations on startup.
 
 The application will be available at:
 
 ```
+
 https://localhost:5271
+
 ```
 
 ---
@@ -115,16 +124,18 @@ https://localhost:5271
 ## 🗂️ Project Structure
 
 ```
+
 dotnet-store/
 ├── Controllers/
 ├── Models/
 ├── Services/
 ├── Views/
-│   ├── Admin/
-│   └── Shared/
+│ ├── Admin/
+│ └── Shared/
 ├── Migrations/
 ├── wwwroot/
 └── Program.cs
+
 ```
 
 ---
@@ -153,3 +164,4 @@ This project is licensed under the MIT License.
 GitHub: https://github.com/ozanyazici9
 
 LinkedIn: https://www.linkedin.com/in/ozan-yaz%C4%B1c%C4%B1-a5025a236/
+```
