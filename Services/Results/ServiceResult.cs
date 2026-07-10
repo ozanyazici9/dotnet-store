@@ -17,3 +17,14 @@ public class ServiceResult
     public static ServiceResult Fail(string message) =>
         new ServiceResult { Succeeded = false, ErrorMessage = message };
 }
+
+public class ServiceResult<T> : ServiceResult
+{
+    public T? Data { get; set; }
+
+    public static ServiceResult<T> Success(T data) =>
+        new ServiceResult<T> { Succeeded = true, Data = data };
+
+    public static new ServiceResult<T> Fail(string message) =>
+        new ServiceResult<T> { Succeeded = false, ErrorMessage = message };
+}
