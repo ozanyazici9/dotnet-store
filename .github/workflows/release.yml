@@ -6,7 +6,7 @@ on:
       - "v*"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   release:
@@ -35,3 +35,8 @@ jobs:
         with:
           name: dotnet-store-${{ github.ref_name }}
           path: ./publish
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
