@@ -2,18 +2,38 @@ name: Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Git tag to deploy (e.g. v1.2.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download Release Artifact
-        uses: dawidd6/action-download-artifact@v9
+      - name: Checkout selected tag
+        uses: actions/checkout@v4
         with:
-          workflow: release.yml
-          workflow_conclusion: success
-          path: ./publish
+          ref: ${{ inputs.tag }}
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore NuGet packages
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish application
+        run: dotnet publish --configuration Release --no-build --output ./publish
 
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -24,3 +44,11 @@ jobs:
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
           local-dir: ./publish/
           dangerous-clean-slate: false
+
+      - name: Deployment summary
+        run: |
+          echo "## 🚀 Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag:** ${{ inputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** Production" >> $GITHUB_STEP_SUMMARY
+          echo "- **Repository:** ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
