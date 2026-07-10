@@ -11,6 +11,7 @@ builder.Services.AddTransient<IEmailService, SmtpEmailService>();
 builder.Services.AddTransient<ICartService, CartService>();
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IKategoriService, KategoriService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 
