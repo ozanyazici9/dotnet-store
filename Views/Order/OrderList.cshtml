@@ -63,7 +63,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <td style=" width: 100px;">
-                                                                    <a asp-controller="Urun" asp-action="Details" asp-route-id="@order.OrderItems[0].Urun.Id"><img src="~/img/@order.OrderItems[0].Urun.Resim" class="img-fluid" alt=""></a>
+                                                                    <a asp-controller="Urun" asp-action="Details" asp-route-id="@order.OrderItems[0].Urun.Id"><img src="~/uploads/@order.OrderItems[0].Urun.Resim" class="img-fluid" alt=""></a>
                                                                 </td>
                                                                 <td>@order.OrderItems[0].Urun.UrunAdi</td>
                                                                 <td>@order.OrderItems[0].Urun.Fiyat ₺</td> 

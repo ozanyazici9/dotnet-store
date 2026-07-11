@@ -116,7 +116,7 @@ public class UrunController : BaseController
         // upload edilen dosyanın ismi projenin içindeki bir dosya ile aynı olup onu ezmesin diye random bir dosya ismi olusturduk eğer istersek yüklenen dosyanın uzantısını da string metodlar ile alabiliriz.
         var fileName = Path.GetRandomFileName() + ".jpg";
         // upload edilen dosyanın fiziksel olarak hangi dizinde tutulacağını belirliyoruz
-        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", fileName);
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", fileName);
         // using içerisinde oluşturduğumuz FileStream nesnesi FileMode.create ile belirlediğimiz dizinde oluşturulacak olan dosyayı işaret eder. Bu nesne işlemden sonra kullanılmayacağı için işlem bittikten sonra otomatik dispose edilsin diye using blogu kullanılır. blogun içindeki kod ise gelen veriyi dosyaya kopyalar.
         using (var stream = new FileStream(path, FileMode.Create))
         {
@@ -185,7 +185,11 @@ public class UrunController : BaseController
             if (model.Resim != null)
             {
                 var fileName = Path.GetRandomFileName() + ".jpg";
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", fileName);
+                var path = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/uploads",
+                    fileName
+                );
 
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
