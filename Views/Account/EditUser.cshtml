@@ -22,7 +22,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-3">
-          @await Html.PartialAsync(partialViewName: "Partials/Site/_AccountEditMenu")
+        @await Html.PartialAsync(partialViewName: "Partials/Site/_AccountEditMenu")
       </div>
       <div class="col-9">
 
@@ -59,3 +59,7 @@
     </div>
   </div>
 </section>
+
+@section Scripts {
+  @await Html.PartialAsync("_ValidationScriptsPartial")
+}

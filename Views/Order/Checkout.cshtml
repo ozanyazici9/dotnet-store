@@ -131,8 +131,8 @@
                                 </div>
                             </div>
                             <button asp-controller="Order" asp-action="Checkout" type="submit"
-                                class="btn btn-primary btn-md w-100 mt-3">
-                                    Siparişi Tamamla
+                                    class="btn btn-primary btn-md w-100 mt-3">
+                                Siparişi Tamamla
                             </button>
                         </div>
                     </div>
@@ -141,3 +141,7 @@
         </form>
     </div>
 </section>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
