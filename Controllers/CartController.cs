@@ -1,4 +1,3 @@
-using dotnet_store.Exceptions;
 using dotnet_store.Models;
 using dotnet_store.Services;
 using Microsoft.AspNetCore.Mvc;

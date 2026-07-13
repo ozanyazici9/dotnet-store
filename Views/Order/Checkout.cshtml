@@ -117,17 +117,17 @@
                                 {
                                     <div class="d-flex justify-content-between align-items-center list-group-item">
                                         <p class="mb-0">@item.Urun.UrunAdi (x @item.Miktar)</p>
-                                        <span>@(item.Urun.Fiyat * item.Miktar)₺</span>
+                                        <span>@((item.Urun.Fiyat * item.Miktar).ToString("C2"))</span>
                                     </div>
                                 }
                                 <div class="d-flex justify-content-between align-items-center list-group-item ">
                                     <p class="mb-0">Ara Toplam</p>
-                                    <span>@ViewBag.Cart.AraToplam() ₺</span>
+                                    <span>@ViewBag.Cart.AraToplam().ToString("C2")</span>
                                 </div>
                                 <div
                                     class="d-flex justify-content-between align-items-center list-group-item bg-warning text-danger">
                                     <p class="mb-0">Toplam</p>
-                                    <span class="fs-5">@ViewBag.Cart.Toplam() ₺</span>
+                                    <span class="fs-5">@ViewBag.Cart.Toplam().ToString("C2") ₺</span>
                                 </div>
                             </div>
                             <button asp-controller="Order" asp-action="Checkout" type="submit"

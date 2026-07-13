@@ -1,4 +1,4 @@
-namespace dotnet_store.Models;
+namespace dotnet_store.Data;
 
 // entity
 

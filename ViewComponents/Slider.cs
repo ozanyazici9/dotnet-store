@@ -1,4 +1,4 @@
-using dotnet_store.Models;
+using dotnet_store.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_store.ViewComponents;

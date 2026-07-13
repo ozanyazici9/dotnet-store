@@ -1,3 +1,4 @@
+using dotnet_store.Data;
 using dotnet_store.Exceptions;
 using dotnet_store.Models;
 using dotnet_store.Services.Results;
@@ -46,7 +47,7 @@ public class OrderService : IOrderService
             SiparisTarihi = DateTime.Now,
             ToplamFiyat = cart.Toplam(),
             OrderItems = cart
-                .CartItems.Select(i => new Models.OrderItem
+                .CartItems.Select(i => new Data.OrderItem
                 {
                     Urun = i.Urun,
                     UrunId = i.UrunId,
@@ -100,7 +101,14 @@ public class OrderService : IOrderService
                     UrunId = oi.UrunId,
                     Miktar = oi.Miktar,
                     Fiyat = oi.Fiyat,
-                    Urun = oi.Urun,
+                    Urun = new UrunGetModel
+                    {
+                        UrunAdi = oi.Urun.UrunAdi,
+                        Resim = oi.Urun.Resim,
+                        Aciklama = oi.Urun.Aciklama,
+                        Fiyat = oi.Urun.Fiyat,
+                        KategoriAdi = oi.Urun.Kategori.KategoriAdi,
+                    },
                 })
                 .ToList(),
             AraToplam = order.AraToplam(), // Urun artık yüklü, doğru çalışır
@@ -137,7 +145,14 @@ public class OrderService : IOrderService
                     {
                         Fiyat = i.Fiyat,
                         Miktar = i.Miktar,
-                        Urun = i.Urun,
+                        Urun = new UrunGetModel
+                        {
+                            UrunAdi = i.Urun.UrunAdi,
+                            Resim = i.Urun.Resim,
+                            Aciklama = i.Urun.Aciklama,
+                            Fiyat = i.Urun.Fiyat,
+                            KategoriAdi = i.Urun.Kategori.KategoriAdi,
+                        },
                         UrunId = i.UrunId,
                     })
                     .ToList(),

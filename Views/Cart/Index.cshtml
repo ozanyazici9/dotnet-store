@@ -74,7 +74,7 @@
                     <div class="me-auto">
                       <div>Sipariş Toplamı</div>
                     </div>
-                    <span>@Model.AraToplam ₺</span>
+                    <span>@(Model.Toplam.ToString("C2"))</span>
                   </div>
                   <div class="d-flex justify-content-center align-items-center list-group-item">
                     <div class="me-auto">
@@ -86,13 +86,13 @@
                     <div class="me-auto">
                       <div>Vergi (%20)</div>
                     </div>
-                    <span>@(Model.AraToplam * 0.2) ₺</span>
+                    <span>@((Model.AraToplam * 0.2).ToString("C2"))</span>
                   </div>
                   <div class="d-flex justify-content-center align-items-center list-group-item">
                     <div class="me-auto">
                       <div>Toplam</div>
                     </div>
-                    <span>@Model.Toplam ₺</span>
+                    <span>@(Model.Toplam.ToString("C2"))</span>
                   </div>
                 </div>
               </div>
