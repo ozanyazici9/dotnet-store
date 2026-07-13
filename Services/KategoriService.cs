@@ -1,5 +1,5 @@
+using dotnet_store.Data;
 using dotnet_store.Exceptions;
-using dotnet_store.Models;
 
 namespace dotnet_store.Services;
 

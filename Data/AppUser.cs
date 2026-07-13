@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace dotnet_store.Models;
+namespace dotnet_store.Data;
 
 public class AppUser : IdentityUser<int>
 {

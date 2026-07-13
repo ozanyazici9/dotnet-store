@@ -1,8 +1,6 @@
+using dotnet_store.Data;
 using dotnet_store.Models;
 using dotnet_store.Services;
-using Iyzipay;
-using Iyzipay.Model;
-using Iyzipay.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +49,14 @@ public class OrderController : BaseController
                         Fiyat = i.Fiyat,
                         Id = i.Id,
                         Miktar = i.Miktar,
-                        Urun = i.Urun,
+                        Urun = new UrunGetModel
+                        {
+                            UrunAdi = i.Urun.UrunAdi,
+                            Resim = i.Urun.Resim,
+                            Aciklama = i.Urun.Aciklama,
+                            Fiyat = i.Urun.Fiyat,
+                            KategoriAdi = i.Urun.Kategori.KategoriAdi,
+                        },
                         UrunId = i.UrunId,
                     })
                     .ToList(),
